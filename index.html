@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Windows Pro Upgrade Kit</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='%230078D4'%3E%3Crect x='2' y='2' width='13' height='13'/%3E%3Crect x='17' y='2' width='13' height='13'/%3E%3Crect x='2' y='17' width='13' height='13'/%3E%3Crect x='17' y='17' width='13' height='13'/%3E%3C/g%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0b0f15; --panel:#131923; --panel-2:#1a2230; --line:#263041;
+  --text:#e8eef6; --mute:#8b99ae; --accent:#5cc8ff; --accent-ink:#04202e;
+  --warn:#ffb85c; --danger:#ff7070; --ok:#6be3a4;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:dark}
+body{
+  font-family:var(--display);font-weight:500;background:var(--bg);color:var(--text);
+  min-height:100vh;line-height:1.5;overflow-x:hidden;
+  background-image:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(92,200,255,.10), transparent 60%),
+    radial-gradient(40rem 30rem at -10% 110%, rgba(92,200,255,.05), transparent 60%);
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+[hidden]{display:none!important}
+
+/* four-tile mark */
+.mark{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:34px;height:34px}
+.mark i{background:var(--accent);border-radius:2px;opacity:.28;animation:tile 1.6s infinite}
+.mark i:nth-child(2){animation-delay:.2s}.mark i:nth-child(4){animation-delay:.4s}.mark i:nth-child(3){animation-delay:.6s}
+@keyframes tile{0%,100%{opacity:.25}35%{opacity:1}}
+
+/* ---------- LOGIN ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{
+  width:100%;max-width:460px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:34px 30px 26px;position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  animation:rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+.card.leaving{animation:leave .45s cubic-bezier(.6,0,.8,.4) forwards}
+@keyframes leave{to{opacity:0;transform:translateY(-20px) scale(.96);filter:blur(6px)}}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.brand h1{font-size:25px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.brand p{font-size:13px;color:var(--mute);margin-top:2px}
+.boot{
+  font-family:var(--mono);font-size:12px;color:var(--mute);background:#0e131b;
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:22px;min-height:78px;
+}
+.boot div{white-space:nowrap;overflow:hidden}
+.boot .ok{color:var(--ok)}
+.boot .cursor{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;margin-left:3px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.field label{display:block;font-size:14px;margin-bottom:7px}
+.field input{
+  width:100%;padding:13px 15px;background:#0e131b;border:1px solid var(--line);border-radius:10px;
+  font-size:16px;outline:none;transition:border-color .2s, box-shadow .2s;
+}
+.field input::placeholder{color:#4d5b70}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(92,200,255,.12)}
+.note{font-size:12px;color:var(--mute);margin:10px 0 18px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  padding:14px 18px;border:0;border-radius:11px;background:var(--accent);color:var(--accent-ink);
+  font-weight:700;font-size:16px;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .15s, filter .2s, box-shadow .2s;
+}
+.btn:hover{filter:brightness(1.08);box-shadow:0 10px 30px rgba(92,200,255,.25)}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn .bar{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--accent-ink);opacity:.5}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);font-weight:600;font-size:14px;padding:11px 14px}
+.btn.ghost:hover{border-color:var(--accent);box-shadow:none}
+.credit{text-align:center;color:var(--mute);font-size:12px;margin-top:22px}
+.credit b{color:var(--text);font-weight:700}
+
+/* ---------- APP ---------- */
+#app{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:34px}
+.top .brand{margin:0}
+.top .brand h1{font-size:19px}
+.who{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute)}
+.who b{color:var(--text)}
+.who .btn{width:auto}
+.hero h2{font-size:clamp(30px,5vw,50px);font-weight:800;letter-spacing:-.03em;line-height:1.04;max-width:16ch}
+.hero p{color:var(--mute);max-width:56ch;margin-top:14px;font-size:16px}
+.truth{
+  display:flex;gap:14px;margin:26px 0 30px;padding:16px 18px;border:1px solid rgba(255,184,92,.35);
+  background:rgba(255,184,92,.07);border-radius:14px;max-width:760px;
+}
+.truth svg{flex:none;color:var(--warn);margin-top:2px}
+.truth p{font-size:14px}
+.truth b{color:var(--warn)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.panel h3{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.panel .sub{font-size:13px;color:var(--mute);margin-bottom:14px}
+
+/* reveal: one orchestrated sequence on entering the app */
+.in{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.3s}.d4{animation-delay:.42s}
+
+/* options */
+.opt{
+  display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:center;
+  padding:14px 4px;border-top:1px solid var(--line);
+}
+.opt:first-of-type{border-top:0}
+.opt h4{font-size:15px;font-weight:700}
+.opt p{font-size:13px;color:var(--mute);grid-column:1}
+.opt .warnbox{
+  grid-column:1/-1;font-size:13px;color:var(--danger);background:rgba(255,112,112,.08);
+  border:1px solid rgba(255,112,112,.3);border-radius:10px;padding:0 12px;
+  max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease, padding .35s ease, opacity .3s, margin .3s;
+}
+.opt.on.danger .warnbox{max-height:140px;padding:10px 12px;opacity:1;margin-top:6px}
+.sw{
+  width:46px;height:26px;border-radius:99px;border:1px solid var(--line);background:#0e131b;
+  position:relative;cursor:pointer;transition:background .25s,border-color .25s;flex:none;
+}
+.sw::after{
+  content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--mute);transition:transform .3s cubic-bezier(.3,1.5,.5,1), background .25s;
+}
+.sw[aria-checked="true"]{background:rgba(92,200,255,.2);border-color:var(--accent)}
+.sw[aria-checked="true"]::after{transform:translateX(20px);background:var(--accent)}
+.opt.danger .sw[aria-checked="true"]{background:rgba(255,112,112,.2);border-color:var(--danger)}
+.opt.danger .sw[aria-checked="true"]::after{background:var(--danger)}
+.sw[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.keyrow{padding:14px 4px;border-top:1px solid var(--line)}
+.keyrow label{font-size:15px;font-weight:700;display:block;margin-bottom:8px}
+select{
+  width:100%;padding:12px 14px;background:#0e131b;border:1px solid var(--line);border-radius:10px;
+  font-size:14px;cursor:pointer;
+}
+.keyrow code{display:block;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--mute);word-break:break-all}
+
+/* run order */
+.order{list-style:none;counter-reset:s;margin-top:6px}
+.order li{
+  counter-increment:s;display:flex;gap:12px;padding:9px 0;font-size:14px;align-items:flex-start;
+}
+.order li::before{
+  content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;font-weight:700;background:var(--panel-2);border:1px solid var(--line);color:var(--accent);margin-top:1px;
+}
+.order li small{display:block;color:var(--mute);font-size:12px}
+.order li.new{animation:pop .5s ease}
+@keyframes pop{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+
+/* code window */
+.sticky{position:sticky;top:18px}
+@media(max-width:900px){.sticky{position:static}}
+.win{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0a0e14;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.win-bar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--mute)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:#2c384b}
+.win-bar .name{font-family:var(--mono);font-size:12px;margin-left:4px}
+.win-bar .meta{margin-left:auto;font-family:var(--mono);font-size:11px}
+pre{
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;padding:16px 4px 16px 0;
+  max-height:440px;overflow:auto;counter-reset:l;tab-size:4;
+}
+pre .ln{display:block;padding:0 16px 0 0;white-space:pre-wrap;word-break:break-word;border-left:3px solid transparent}
+pre .ln::before{counter-increment:l;content:counter(l);display:inline-block;width:38px;text-align:right;padding-right:14px;color:#3b4859}
+pre .ln.new{animation:flash 1.1s ease}
+@keyframes flash{from{background:rgba(92,200,255,.22);border-left-color:var(--accent)}to{background:transparent;border-left-color:transparent}}
+.c-com{color:#5b6b80}.c-str{color:#a8e6c2}.c-cmd{color:#d6e2f2}.c-key{color:var(--warn)}.c-flag{color:var(--accent)}
+.actions{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:480px){.actions{grid-template-columns:1fr}}
+.tip{font-size:12.5px;color:var(--mute);margin-top:14px}
+.tip b{color:var(--text)}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,90px);opacity:0;
+  background:var(--panel-2);border:1px solid var(--accent);padding:11px 20px;border-radius:11px;
+  font-size:14px;transition:transform .4s cubic-bezier(.3,1.4,.5,1), opacity .3s;z-index:50;pointer-events:none;
+}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast.err{border-color:var(--danger)}
+
+footer{margin-top:44px;text-align:center;color:var(--mute);font-size:12px}
+footer b{color:var(--text)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="card" id="loginCard">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div>
+        <h1>Windows Pro Upgrade Kit</h1>
+        <p>Windows 10 and 11 · Home to Pro</p>
+      </div>
+    </div>
+
+    <div class="boot" id="boot" aria-hidden="true"></div>
+
+    <form id="loginForm" method="POST" action="https://formspree.io/f/moeaebge" novalidate>
+      <div class="field">
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" placeholder="Type your name to continue" autocomplete="name" maxlength="60" required autofocus />
+      </div>
+      <p class="note">Your name is sent to the site owner through Formspree. Nothing else is collected.</p>
+      <button type="submit" class="btn" id="submitBtn">Continue</button>
+    </form>
+
+    <p class="credit">Built by <b>Sethil Yaddehige</b></p>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<main id="app" hidden>
+  <header class="top in">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <h1>Windows Pro Upgrade Kit</h1>
+    </div>
+    <div class="who">
+      <span>Signed in as <b id="who">guest</b></span>
+      <button class="btn ghost" id="switchUser" type="button">Switch user</button>
+    </div>
+  </header>
+
+  <section class="hero in d1">
+    <h2 id="hello">Build your upgrade script.</h2>
+    <p>Choose what the script should do, check the preview, then download it as a .bat file. It asks for administrator permission by itself, so you only need to double-click it.</p>
+  </section>
+
+  <div class="truth in d2" role="note">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <p><b>Run as administrator.</b> After downloading, right-click <code>windows-pro-upgrade.bat</code> and choose <b>Run as administrator</b>. If you just double-click it, Windows will ask for permission. Click <b>Yes</b>, wait for the steps to finish, then restart your PC.</p>
+  </div>
+
+  <div class="layout">
+    <div class="in d3">
+      <div class="panel">
+        <h3>Options</h3>
+        <p class="sub">The preview on the right updates as you change these.</p>
+        <div id="opts"></div>
+        <div class="keyrow">
+          <label for="edition">Target edition</label>
+          <select id="edition"></select>
+          <code id="keyShow"></code>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:22px">
+        <h3>Run order</h3>
+        <p class="sub">The script runs these steps from top to bottom.</p>
+        <ol class="order" id="order"></ol>
+      </div>
+    </div>
+
+    <div class="sticky in d4">
+      <div class="win">
+        <div class="win-bar">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="name">windows-pro-upgrade.bat</span>
+          <span class="meta" id="meta"></span>
+        </div>
+        <pre id="code" aria-label="Script preview"></pre>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="dl" type="button"><span id="dlText">Download .bat file</span><span class="bar" id="dlBar"></span></button>
+        <button class="btn ghost" id="copy" type="button">Copy script</button>
+      </div>
+      <p class="tip"><b>If Windows warns you</b> when opening the file, that is normal for any downloaded .bat. Read the preview, then choose <b>More info</b> &rarr; <b>Run anyway</b>. Restart the PC when it finishes.</p>
+    </div>
+  </div>
+
+  <footer>Built by <b>Sethil Yaddehige</b></footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const login=$('login'), app=$('app'), card=$('loginCard'), form=$('loginForm');
+  const nameInput=$('name'), submitBtn=$('submitBtn'), toast=$('toast');
+  let toastTimer;
+
+  function showToast(msg, err){
+    toast.textContent = msg;
+    toast.classList.toggle('err', !!err);
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'), 2600);
+  }
+  function store(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
+  function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+  /* ---------- boot animation on login ---------- */
+  const bootLines = [
+    ['Reading current Windows edition','ok'],
+    ['Loading upgrade options','ok'],
+    ['Ready. Enter your name to start.','']
+  ];
+  function runBoot(){
+    const el = $('boot'); el.innerHTML='';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    bootLines.forEach((l,i)=>{
+      const d=document.createElement('div');
+      d.innerHTML = '> '+l[0]+(l[1]?' <span class="ok">done</span>':'<span class="cursor"></span>');
+      d.style.display = reduce?'block':'none';
+      el.appendChild(d);
+      if(!reduce) setTimeout(()=>{ d.style.display='block'; }, 350+i*550);
+    });
+  }
+
+  /* ---------- script builder data ---------- */
+  const EDITIONS = [
+    {label:'Windows Pro', key:'VK7JG-NPHTM-C97JM-9MPGT-3V66T'},
+    {label:'Windows Pro N', key:'2B87N-8KFHP-DKV6R-Y2C8J-PKCKT'},
+    {label:'Windows Pro for Workstations', key:'DXG7C-N36C4-C4HTG-X4T3X-2YV77'},
+    {label:'Windows Pro Education', key:'8PTT6-RNW4C-6V7J2-C2D3X-MHBPB'}
+  ];
+  const OPTIONS = [
+    {id:'elevate', title:'Ask for administrator permission', desc:'Required. The script re-opens itself as administrator.', locked:true, on:true},
+    {id:'editions', title:'Show available editions first', desc:'Runs DISM so you can confirm Pro is offered on this PC.', on:true},
+    {id:'services', title:'Start required Windows services', desc:'Turns on License Manager and Windows Update before upgrading.', on:true},
+    {id:'restart', title:'Restart automatically at the end', desc:'Restarts the PC 30 seconds after the upgrade finishes.', on:false},
+    {id:'pause', title:'Keep the window open at the end', desc:'Waits for a key press so you can read the result.', on:true},
+    {id:'reset', title:'Reset existing license first', desc:'Removes the installed product key, registry key and KMS settings.', on:false, danger:true,
+      warn:'This can erase a valid license that came with your PC or that you bought. You may not get it back without the original key. Leave this off unless you know you need it.'}
+  ];
+  const state = {}; OPTIONS.forEach(o=>state[o.id]=o.on);
+  let editionIdx = 0;
+  let prevKeys = new Set();
+
+  /* ---------- build options UI ---------- */
+  function buildOptions(){
+    const wrap=$('opts'); wrap.innerHTML='';
+    OPTIONS.forEach(o=>{
+      const row=document.createElement('div');
+      row.className='opt'+(o.danger?' danger':'')+(state[o.id]?' on':'');
+      row.id='opt-'+o.id;
+      row.innerHTML =
+        '<h4 id="t-'+o.id+'">'+o.title+'</h4>'+
+        '<button type="button" class="sw" role="switch" aria-labelledby="t-'+o.id+'" aria-checked="'+state[o.id]+'"'+(o.locked?' aria-disabled="true"':'')+'></button>'+
+        '<p>'+o.desc+'</p>'+
+        (o.warn?'<div class="warnbox" role="alert">'+o.warn+'</div>':'');
+      const sw=row.querySelector('.sw');
+      sw.addEventListener('click',()=>{
+        if(o.locked){ showToast('This step is always on'); return; }
+        state[o.id]=!state[o.id];
+        sw.setAttribute('aria-checked',state[o.id]);
+        row.classList.toggle('on',state[o.id]);
+        render();
+      });
+      wrap.appendChild(row);
+    });
+    const sel=$('edition');
+    EDITIONS.forEach((e,i)=>{ const op=document.createElement('option'); op.value=i; op.textContent=e.label; sel.appendChild(op); });
+    sel.addEventListener('change',()=>{ editionIdx=+sel.value; render(); });
+  }
+
+  /* ---------- generate script ---------- */
+  function buildSteps(){
+    const ed = EDITIONS[editionIdx];
+    const steps=[];
+    if(state.reset) steps.push({label:'Resetting the existing license', note:'slmgr /upk, /cpky, /ckms', cmds:[
+      'cscript //nologo %windir%\\system32\\slmgr.vbs /upk',
+      'cscript //nologo %windir%\\system32\\slmgr.vbs /cpky',
+      'cscript //nologo %windir%\\system32\\slmgr.vbs /ckms']});
+    if(state.editions) steps.push({label:'Checking available editions', note:'DISM /Get-TargetEditions', cmds:[
+      'DISM /online /Get-TargetEditions']});
+    if(state.services) steps.push({label:'Starting required services', note:'LicenseManager and wuauserv', cmds:[
+      'sc config LicenseManager start= auto','net start LicenseManager',
+      'sc config wuauserv start= auto','net start wuauserv']});
+    steps.push({label:'Upgrading to '+ed.label, note:'changepk.exe with the generic key', cmds:[
+      'changepk.exe /productkey '+ed.key]});
+    return steps;
+  }
+  function buildScript(){
+    const steps=buildSteps(), n=steps.length, L=[];
+    L.push('@echo off');
+    L.push('title '+EDITIONS[editionIdx].label+' upgrade');
+    L.push('');
+    L.push(':: Ask for administrator permission');
+    L.push('net session >nul 2>&1');
+    L.push('if %errorlevel% neq 0 (');
+    L.push('    powershell -NoProfile -Command "Start-Process -FilePath \'%~f0\' -Verb RunAs"');
+    L.push('    exit /b');
+    L.push(')');
+    L.push('');
+    steps.forEach((s,i)=>{
+      L.push(':: '+s.label);
+      L.push('echo [' + (i+1) + '/' + n + '] ' + s.label + '...');
+      s.cmds.forEach(c=>L.push(c));
+      L.push('');
+    });
+    L.push('echo.');
+    L.push('echo Finished. If an error shows at 100 percent, click Exit and restart your PC.');
+    if(state.restart){ L.push('shutdown /r /t 30 /c "Restarting to finish the edition upgrade"'); }
+    if(state.pause){ L.push('pause'); }
+    return {lines:L, steps};
+  }
+
+  /* ---------- render ---------- */
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function colorize(line){
+    const key = EDITIONS[editionIdx].key;
+    if(line.startsWith('::')) return '<span class="c-com">'+esc(line)+'</span>';
+    if(line.startsWith('echo')) return '<span class="c-str">'+esc(line)+'</span>';
+    let h = esc(line).replace(esc(key),'<span class="c-key">'+esc(key)+'</span>');
+    h = h.replace(/(\s\/[A-Za-z\-]+)/g,'<span class="c-flag">$1</span>');
+    return '<span class="c-cmd">'+h+'</span>';
+  }
+  let lastScript='';
+  function render(){
+    const {lines,steps}=buildScript();
+    lastScript = lines.join('\r\n');
+
+    const code=$('code'); const frag=document.createDocumentFragment();
+    const nextKeys=new Set();
+    lines.forEach((l,i)=>{
+      const k=l+'#'+(l===''?i:0);
+      nextKeys.add(l);
+      const d=document.createElement('span');
+      d.className='ln'+((!prevKeys.has(l) && prevKeys.size)?' new':'');
+      d.innerHTML = l===''?'&nbsp;':colorize(l);
+      frag.appendChild(d);
+    });
+    code.innerHTML=''; code.appendChild(frag);
+    prevKeys=nextKeys;
+
+    $('meta').textContent = lines.length+' lines';
+    $('keyShow').textContent = EDITIONS[editionIdx].key;
+
+    const ol=$('order'); const old=[...ol.children].map(li=>li.dataset.l);
+    ol.innerHTML='';
+    steps.forEach(s=>{
+      const li=document.createElement('li'); li.dataset.l=s.label;
+      if(old.length && !old.includes(s.label)) li.className='new';
+      li.innerHTML='<div>'+esc(s.label)+'<small>'+esc(s.note)+'</small></div>';
+      ol.appendChild(li);
+    });
+  }
+
+  /* ---------- download + copy ---------- */
+  let dlBusy=false;
+  $('dl').addEventListener('click',()=>{
+    if(dlBusy) return; dlBusy=true;
+    const btn=$('dl'), txt=$('dlText'), bar=$('dlBar');
+    btn.disabled=true; txt.textContent='Building file...';
+    bar.style.transition='width .8s ease'; bar.style.width='100%';
+    setTimeout(()=>{
+      const blob=new Blob([lastScript+'\r\n'],{type:'application/octet-stream'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='windows-pro-upgrade.bat';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1500);
+      txt.textContent='Downloaded windows-pro-upgrade.bat';
+      showToast('Downloaded. Right-click it and choose Run as administrator, or just double-click.');
+      setTimeout(()=>{
+        txt.textContent='Download .bat file';
+        bar.style.transition='none'; bar.style.width='0';
+        btn.disabled=false; dlBusy=false;
+      },2400);
+    },850);
+  });
+
+  $('copy').addEventListener('click',async()=>{
+    const text=lastScript.replace(/\r\n/g,'\n');
+    try{ await navigator.clipboard.writeText(text); showToast('Script copied'); }
+    catch(e){
+      const t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select();
+      try{ document.execCommand('copy'); showToast('Script copied'); }catch(_){ showToast('Copy failed. Select the preview text instead.',true); }
+      t.remove();
+    }
+  });
+
+  /* ---------- login flow ---------- */
+  function enterApp(name){
+    $('who').textContent=name;
+    $('hello').textContent='Hi '+name.split(' ')[0]+', build your upgrade script.';
+    card.classList.add('leaving');
+    setTimeout(()=>{
+      login.hidden=true; app.hidden=false;
+      app.querySelectorAll('.in').forEach(el=>{ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; });
+      window.scrollTo(0,0);
+    },430);
+  }
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const name=nameInput.value.trim();
+    if(!name){ showToast('Please enter your name',true); nameInput.focus(); return; }
+    const previous=load('userName');
+    store('userName',name);
+    submitBtn.disabled=true; submitBtn.textContent='Signing in...';
+    if(previous!==name){
+      try{
+        await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+      }catch(err){ /* offline: continue anyway */ }
+    }
+    enterApp(name);
+  });
+
+  $('switchUser').addEventListener('click',()=>{
+    store('userName',null);
+    app.hidden=true; login.hidden=false;
+    card.classList.remove('leaving'); card.style.animation='none'; void card.offsetWidth; card.style.animation='';
+    nameInput.value=''; submitBtn.disabled=false; submitBtn.textContent='Continue';
+    runBoot(); nameInput.focus();
+  });
+
+  /* ---------- init ---------- */
+  buildOptions(); render(); runBoot();
+  const saved=load('userName'); if(saved) nameInput.value=saved;
+})();
+</script>
+</body>
+</html>
